@@ -1,10 +1,10 @@
 {
-    "compilerOptions": {
-      "target": "ES2022",                              
-      "module": "commonjs",                               
-      "outDir": "lib",
-      "declaration": true,
-      "strict": true,
-      "esModuleInterop": true                               
-    }
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "outDir": "teste",
+    "declaration": true,
+    "strict": true,
+    "esModuleInterop": true
   }
+}
