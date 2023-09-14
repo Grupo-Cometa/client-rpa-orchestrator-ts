@@ -1,4 +1,9 @@
+import { Status } from "./types";
+
 interface InterfaceMain {
-    start(callback: () => Promise<void>): Promise<void>;
-    stop(callback: () => Promise<void>): Promise<void>;
+    start(): Promise<void> ;
+    stop(): Promise<void>;
+    publishStatus(): Status
 }
+
+export type { InterfaceMain }
