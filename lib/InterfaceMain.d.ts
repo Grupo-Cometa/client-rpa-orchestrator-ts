@@ -1,7 +1,6 @@
-import { Status } from "./types";
 interface InterfaceMain {
     start(): Promise<void>;
-    stop(): Promise<void>;
-    publishStatus(): Status;
+    stop?: Function;
+    publishStatus?: Function;
 }
 export type { InterfaceMain };
