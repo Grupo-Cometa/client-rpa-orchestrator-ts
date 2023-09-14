@@ -1,38 +1,35 @@
 import { WebSocketClient } from "./WebSocket/WebSocketClient";
+import { InterfaceOs } from "./types/InterfaceOs";
 var execSync = require("child_process").execSync;
 
-const os: any = {
-  linux: {
-    command: 'ps aux',
-    process: 'playwright',
-  },
-  win32: {
-    command: 'wmic process get description',
-    process: 'playwright',
-  },
-}
+export class Status 
+{
+  public static publish() {
+    const os: InterfaceOs = {
+      'linux': {
+        command: 'ps aux',
+        process: 'playwright',
+      },
+      'win32': {
+        command: 'wmic process get description',
+        process: 'playwright',
+      },
+    }
 
-export default function status() {
-  try {
+    const currentOs = process.platform
+    const command = os[currentOs].command
+    const processBot = os[currentOs].process
 
-    let uipathRunning = false;
-    let currentOs = process.platform
-    let command = os[currentOs].command
-    let processBot = os[currentOs].process
-
+    let inExecution = false;
+    
     const socket = new WebSocketClient(`status.${process.env.PUBLIC_ID}`);
 
     setInterval(() => {
       var processes = execSync(command).toString();
-
-      uipathRunning = processes.includes(processBot);
+      inExecution = processes.includes(processBot);
       socket.sendMessage({
-        inExecution: uipathRunning
+        inExecution
       })
     }, 3500)
-
-    return;
-  } catch (error) {
-    return error
   }
 }

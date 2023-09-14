@@ -12,7 +12,7 @@ export class RabbitMQServer {
       this.conn = await connect(this.uri);
       this.channel = await this.conn.createChannel();
     } catch (err) {
-      console.error("Não foi possível conectar ao RabbitMQ:", err);
+
     }
   }
 
@@ -21,7 +21,7 @@ export class RabbitMQServer {
       await this.channel?.close();
       await this.conn?.close();
     } catch (err) {
-      console.error("Não foi possível fechar a conexão com o RabbitMQ:", err);
+      
     }
   }
 
@@ -41,7 +41,7 @@ export class RabbitMQServer {
         }, 500);
       });
     } catch (err) {
-      console.error(`Não foi possível publicar na fila ${queue}:`, err);
+      
     }
   }
 }
