@@ -1,5 +1,5 @@
+#!/usr/bin/env node
 const Main = require(process.cwd() + '\\src\\Main');
-
 import { WebSocketClient } from "./WebSocket/WebSocketClient";
 import 'dotenv/config';
 
