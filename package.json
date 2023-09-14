@@ -4,11 +4,8 @@
   "description": "",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "scripts": {
-    
-  },
-  "author": "",
-  "license": "ISC",
+  "author": "Grupo Cometa",
+  "license": "MIT",
   "devDependencies": {
     "@types/amqplib": "^0.10.1",
     "@types/ws": "^8.5.5",
