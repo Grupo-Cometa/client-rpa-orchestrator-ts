@@ -61,17 +61,5 @@ export class WebSocketClient {
                 this.socketConnection.send(JSON.stringify(body));
             }, 30000)
         };
-
-        // this.socketConnection.onclose = (_) => {
-        //     console.log('close channel:', this.channel)
-        //     setTimeout(() => {
-        //         this.socketConnection = this.connection()
-        //         this.onMessage(callback)
-        //     }, 30000);
-        // };
-
-        // this.socketConnection.onerror = (_) => {
-        //     this.socketConnection.close();
-        // };
     }
 }

@@ -6,24 +6,19 @@ const os: any = {
     command: 'ps aux',
     process: 'playwright',
   },
-
   win32: {
     command: 'wmic process get description',
     process: 'playwright',
   },
-
 }
 
 export default function status() {
   try {
 
     let uipathRunning = false;
-
     let currentOs = process.platform
     let command = os[currentOs].command
     let processBot = os[currentOs].process
-
-    
 
     const socket = new WebSocketClient(`status.${process.env.PUBLIC_ID}`);
 
@@ -35,8 +30,7 @@ export default function status() {
         inExecution: uipathRunning
       })
     }, 3500)
-    
-    
+
     return;
   } catch (error) {
     return error

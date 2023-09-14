@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "commonjs",
-    "outDir": "teste",
+    "outDir": "lib",
     "declaration": true,
     "strict": true,
     "esModuleInterop": true
