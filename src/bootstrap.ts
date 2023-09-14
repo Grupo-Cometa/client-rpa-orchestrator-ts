@@ -36,8 +36,6 @@ export class Bootstrap {
         socketStop.onMessage(async () => {
             await methodStop();
         })
-
-        console.log("FINAL")
     }
 
     publishStatus = () => {
