@@ -1,2 +1,2 @@
 @echo off
-node "%~dp0\cli.js" %*
+node "%~dp0\bootstrap.js" %*
