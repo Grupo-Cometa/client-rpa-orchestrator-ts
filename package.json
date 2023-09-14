@@ -13,9 +13,6 @@
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
-  "bin": {
-    "bootstrap": "./lib/bootstrap.js"
-  },
   "dependencies": {
     "amqplib": "^0.10.3",
     "dotenv": "^16.3.1",
