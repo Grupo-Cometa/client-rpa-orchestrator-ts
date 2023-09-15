@@ -2,7 +2,7 @@ import { MessageEvent, WebSocket } from "ws";
 import InterfaceBody from "./InterfaceBody";
 
 export class WebSocketClient {
-  
+
     private socketConnection: WebSocket;
 
     constructor(private channel: string) {
@@ -31,6 +31,7 @@ export class WebSocketClient {
                 const response = JSON.parse(message.data)
                 if (callback) return callback(response)
                 socket.close()
+                this.socketConnection.close()
             }
             if (socket.readyState === WebSocket.OPEN) return socket.send(strBody)
         }
@@ -61,7 +62,7 @@ export class WebSocketClient {
                 return callback(response);
             };
 
-            if (this.socketConnection.readyState === WebSocket.CONNECTING){
+            if (this.socketConnection.readyState === WebSocket.CONNECTING) {
                 this.socketConnection.close();
             }
 
