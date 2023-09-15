@@ -1,6 +1,4 @@
-import 'dotenv/config';
+import { Log as LogType } from "./types";
 export declare class Log {
-    static send(message: string, logType: 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL'): Promise<void>;
-    private static rabbitmqSend;
-    private static websocketSend;
+    static write(type: LogType["log_type"], message: string): Promise<void>;
 }

@@ -13,4 +13,10 @@ type Execution = {
     parameters: string;
     public_id: string | undefined;
 };
-export type { Status, Execution };
+type Log = {
+    type: 'log';
+    message: string;
+    log_type: 'info' | 'warning' | 'error' | 'success';
+    public_id: string | undefined;
+};
+export type { Status, Execution, Log };

@@ -2,10 +2,9 @@ import { MessageEvent, WebSocket } from "ws";
 import InterfaceBody from "./InterfaceBody";
 
 export class WebSocketClient {
-    private socketConnection: WebSocket;
 
     constructor(private channel: string) {
-        this.socketConnection = this.connection()
+
     }
 
     private connection(): WebSocket {
@@ -31,18 +30,21 @@ export class WebSocketClient {
                 if (callback) return callback(response)
                 socket.close()
             }
-            if (socket.readyState === WebSocket.OPEN) return socket.send(strBody)
+
+            socket.send(strBody)
         }
     }
 
     onMessage(callback: (data: any) => void) {
+
+        const sokect = this.connection()
         const body = {
             channel: this.channel,
             type: 'subscribe',
         };
 
-        this.socketConnection.onopen = () => {
-            this.socketConnection.onmessage = (message: MessageEvent) => {
+        sokect.onopen = () => {
+            sokect.onmessage = (message: MessageEvent) => {
                 //@ts-ignore
                 const response = JSON.parse(message.data);
                 if (response?.statusCode === 101) {
@@ -52,13 +54,13 @@ export class WebSocketClient {
                 return callback(response);
             };
 
-            if (this.socketConnection.readyState === WebSocket.CONNECTING){
-                this.socketConnection.close();
+            if (sokect.readyState === WebSocket.CONNECTING) {
+                sokect.close();
             }
 
-            this.socketConnection.send(JSON.stringify(body));
+            sokect.send(JSON.stringify(body));
             setInterval(() => {
-                this.socketConnection.send(JSON.stringify(body));
+                sokect.send(JSON.stringify(body));
             }, 30000)
         };
     }
