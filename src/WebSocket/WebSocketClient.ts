@@ -3,8 +3,10 @@ import InterfaceBody from "./InterfaceBody";
 
 export class WebSocketClient {
 
+    private socketConnection: WebSocket;
+    
     constructor(private channel: string) {
-
+        this.socketConnection = this.connection()
     }
 
     private connection(): WebSocket {
@@ -62,6 +64,19 @@ export class WebSocketClient {
             setInterval(() => {
                 sokect.send(JSON.stringify(body));
             }, 30000)
+        };
+
+        this.socketConnection.onclose = (_) => {
+            console.log('close channel:', this.channel)
+            setTimeout(() => {
+                this.socketConnection = this.connection()
+                this.onMessage(callback)
+            }, 30000);
+        };
+
+        this.socketConnection.onerror = (_) => {
+            this.socketConnection.close();
+            console.info('WebSocket error:', this.channel);
         };
     }
 }
