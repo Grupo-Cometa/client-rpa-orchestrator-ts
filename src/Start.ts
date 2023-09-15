@@ -8,18 +8,19 @@ class Start {
 
     }
 
-    async executionShedule(sheduleId: number) {
+    async executionShedule(sheduleId?: string) {
+        
         ExecutionAmqp.publish(this.getExecution("START", sheduleId))
         await this.main.start()
         ExecutionAmqp.publish(this.getExecution("STOP", sheduleId))
     }
 
-    private getExecution(status: Execution["status"], schedule_id: number): Execution {
+    private getExecution(status: Execution["status"], schedule_id?: string): Execution {
         return {
             date: moment().format('YYYY-MM-DD HH:mm:ss'),
             status,
             public_id: process.env.PUBLIC_ID,
-            schedule_id,
+            schedule_id: (schedule_id == undefined) ? '' : schedule_id,
             type: "execution",
             token: "",
             parameters: "{}"

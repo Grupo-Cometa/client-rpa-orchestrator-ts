@@ -1,21 +1,19 @@
 import { InterfaceMain } from "./InterfaceMain";
+import { Start } from "./Start";
 import { WebSocketClient } from "./WebSocket/WebSocketClient";
-import { Status } from "./types";
 import { InterfaceOs } from "./types/InterfaceOs";
 var execSync = require("child_process").execSync;
 import { exec } from "child_process";
 
 export class Bootstrap {
 
+    private start: Start;
+
     constructor(private main: InterfaceMain) {
-        
+        this.start = new Start(main);
     }
 
     run() {
-        this.start();
-    }
-    
-    start() {
         const socketStatus = new WebSocketClient(`status.${process.env.PUBLIC_ID}`);
         const socketStart = new WebSocketClient(`start.${process.env.PUBLIC_ID}`);
         const socketStop = new WebSocketClient(`stop.${process.env.PUBLIC_ID}`);
@@ -30,7 +28,7 @@ export class Bootstrap {
         }, 3500)
 
         socketStart.onMessage(async () => {
-            await this.main.start();
+            await this.start.executionShedule();
         })
 
         socketStop.onMessage(async () => {

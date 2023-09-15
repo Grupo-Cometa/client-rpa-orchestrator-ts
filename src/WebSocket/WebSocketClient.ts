@@ -2,9 +2,9 @@ import { MessageEvent, WebSocket } from "ws";
 import InterfaceBody from "./InterfaceBody";
 
 export class WebSocketClient {
-
+  
     private socketConnection: WebSocket;
-    
+
     constructor(private channel: string) {
         this.socketConnection = this.connection()
     }
@@ -32,21 +32,26 @@ export class WebSocketClient {
                 if (callback) return callback(response)
                 socket.close()
             }
+            if (socket.readyState === WebSocket.OPEN) return socket.send(strBody)
+        }
 
-            socket.send(strBody)
+        socket.onclose = (_) => {
+            socket.close();
+        }
+
+        socket.onerror = (_) => {
+            socket.close();
         }
     }
 
     onMessage(callback: (data: any) => void) {
-
-        const sokect = this.connection()
         const body = {
             channel: this.channel,
             type: 'subscribe',
         };
 
-        sokect.onopen = () => {
-            sokect.onmessage = (message: MessageEvent) => {
+        this.socketConnection.onopen = () => {
+            this.socketConnection.onmessage = (message: MessageEvent) => {
                 //@ts-ignore
                 const response = JSON.parse(message.data);
                 if (response?.statusCode === 101) {
@@ -56,27 +61,28 @@ export class WebSocketClient {
                 return callback(response);
             };
 
-            if (sokect.readyState === WebSocket.CONNECTING) {
-                sokect.close();
+            if (this.socketConnection.readyState === WebSocket.CONNECTING){
+                this.socketConnection.close();
             }
 
-            sokect.send(JSON.stringify(body));
+            this.socketConnection.send(JSON.stringify(body));
             setInterval(() => {
-                sokect.send(JSON.stringify(body));
+                this.socketConnection.send(JSON.stringify(body));
             }, 30000)
         };
 
         this.socketConnection.onclose = (_) => {
             console.log('close channel:', this.channel)
             setTimeout(() => {
+                console.log('tentando conectar onCLose')
                 this.socketConnection = this.connection()
                 this.onMessage(callback)
-            }, 30000);
+            }, 5000);
         };
 
         this.socketConnection.onerror = (_) => {
             this.socketConnection.close();
-            console.info('WebSocket error:', this.channel);
+            console.log('tentando conectar onError')
         };
     }
 }

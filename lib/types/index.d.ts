@@ -9,7 +9,7 @@ type Execution = {
     date: string;
     status: "START" | 'STOP';
     token: string;
-    schedule_id: number;
+    schedule_id: string;
     parameters: string;
     public_id: string | undefined;
 };
