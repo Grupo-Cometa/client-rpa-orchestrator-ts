@@ -20,7 +20,9 @@ class Start {
             status,
             public_id: process.env.PUBLIC_ID,
             schedule_id,
-            type: "execution"
+            type: "execution",
+            token: "",
+            parameters: "{}"
         }
     }
 }
