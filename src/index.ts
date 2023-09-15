@@ -1,4 +1,4 @@
 export { Log } from './Log';
-export { Bootstrap } from './Bootstraps';
+export { Bootstrap } from './Bootstrap';
 export { InterfaceMain } from './InterfaceMain';
 export { Start } from './Start';
