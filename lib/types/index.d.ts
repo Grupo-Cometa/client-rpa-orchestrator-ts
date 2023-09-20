@@ -8,7 +8,7 @@ type Execution = {
     type: 'execution';
     date: string;
     status: "START" | 'STOP';
-    token: string;
+    token?: string;
     schedule_id: string;
     parameters: string;
     public_id: string | undefined;
