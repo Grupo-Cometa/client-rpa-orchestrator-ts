@@ -19,7 +19,8 @@ type Log = {
     type: 'log',
     message: string,
     log_type: 'info' | 'warning' | 'error' | 'success',
-    public_id: string | undefined
+    public_id: string | undefined,
+    date: string
 }
 
 export type { Status, Execution, Log }

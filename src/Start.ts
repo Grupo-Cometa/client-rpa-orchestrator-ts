@@ -4,11 +4,10 @@ import moment from 'moment';
 import { Execution } from "./types";
 
 class Start {
-    constructor(private main: InterfaceMain) {
 
-    }
+    constructor(private main: InterfaceMain) {}
 
-    async executionShedule(sheduleId?: string, token?: string) {
+    async execute(sheduleId?: string, token?: string) {
         ExecutionAmqp.publish(this.getExecution("START", sheduleId, token))
         await this.main.start()
         ExecutionAmqp.publish(this.getExecution("STOP", sheduleId, token))
