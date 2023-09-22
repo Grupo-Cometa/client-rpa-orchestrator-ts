@@ -27,8 +27,8 @@ export class Bootstrap {
             )
         }, 3500)
 
-        socketStart.onMessage(async () => {
-            await this.start.executionShedule();
+        socketStart.onMessage(async ({data}) => {
+            await this.start.execute('', data.token);
         })
 
         socketStop.onMessage(async () => {

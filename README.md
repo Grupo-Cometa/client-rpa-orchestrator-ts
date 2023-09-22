@@ -9,7 +9,7 @@
 npm install grupo-cometa-client-rpa-orchestrator-ts
 
 ```
-## 🔨 How to Usage
+## 🔨 Como usar
 
 - Crie um arquivo .env com as seguintes variáveis de ambente
 
@@ -22,16 +22,18 @@ AMQP_URL=
 WS_URL=
 ```
 
-#### Para usar a biblioteca siga o exemplo:
+#### Funções de Interação com o Orquestrador Disponíveis:
+
+### Log
 
 ```javascript
 
-const { Log } = require("grupo-cometa-orchestrator-logs");
+import { Log } from "client-rpa-orchestrator-ts";
 
-const message = 'Log message';
+const message = 'Mensagem do Log';
 
-Log.send(message, 'INFO');
+await Log.write('success', message);
 
-//Logs types includes INFO, WARNING, ERROR, CRITICAL
+//Tipos de log disponíveis: success, warning, error, info
 
 ```
