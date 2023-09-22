@@ -8,10 +8,23 @@ class Start {
     constructor(private main: InterfaceMain) {}
 
     async execute(sheduleId?: string, token?: string) {
-        ExecutionAmqp.publish(this.getExecution("START", sheduleId, token))
-        await this.main.start()
-        ExecutionAmqp.publish(this.getExecution("STOP", sheduleId, token))
+        await this.sleep(1000);
+        await ExecutionAmqp.publish(this.getExecution("START", sheduleId, token))
+        
+        try {
+            await this.main.start()
+        } catch(error: unknown) {
+            console.error(error);
+        } finally {
+            await ExecutionAmqp.publish(this.getExecution("STOP", sheduleId, token));
+        }
     }
+
+    private async sleep(milliseconds: number): Promise<void> {
+        return new Promise((resolve) => {
+            setTimeout(resolve, milliseconds);
+          });
+    } 
 
     private getExecution(status: Execution["status"], schedule_id?: string, token?: string): Execution {
         return {

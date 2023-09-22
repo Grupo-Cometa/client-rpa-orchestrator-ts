@@ -14,6 +14,12 @@ export class WebSocketClient {
         return socket
     }
 
+    private async sleep(milliseconds: number): Promise<void> {
+        return new Promise((resolve) => {
+            setTimeout(resolve, milliseconds);
+        });
+    }
+
     sendMessage(data: object, callback?: (data: any) => void) {
         const socket = this.connection()
 
@@ -29,11 +35,12 @@ export class WebSocketClient {
             socket.onmessage = async (message: MessageEvent) => {
                 //@ts-ignore
                 const response = JSON.parse(message.data)
-                if (callback) return callback(response)
-                socket.close()
-                this.socketConnection.close()
+                if (callback) callback(response)
+                socket.close();
+                await this.sleep(200);
+                this.socketConnection.close();
             }
-            if (socket.readyState === WebSocket.OPEN) return socket.send(strBody)
+            socket.send(strBody)
         }
 
         socket.onclose = (_) => {
