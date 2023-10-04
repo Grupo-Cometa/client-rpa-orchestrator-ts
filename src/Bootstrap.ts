@@ -1,3 +1,5 @@
+import { RabbitMQServer } from "./Amqp/RabbitMqServer";
+import { ScheduleAmqp } from "./Amqp/ScheduleAmqp";
 import { InterfaceMain } from "./InterfaceMain";
 import { Start } from "./Start";
 import { WebSocketClient } from "./WebSocket/WebSocketClient";
@@ -13,7 +15,7 @@ export class Bootstrap {
         this.start = new Start(main);
     }
 
-    run() {
+    async run() {
         const socketStatus = new WebSocketClient(`status.${process.env.PUBLIC_ID}`);
         const socketStart = new WebSocketClient(`start.${process.env.PUBLIC_ID}`);
         const socketStop = new WebSocketClient(`stop.${process.env.PUBLIC_ID}`);
@@ -26,6 +28,8 @@ export class Bootstrap {
                 methodStatus()
             )
         }, 3500)
+
+        await ScheduleAmqp.consume();
 
         socketStart.onMessage(async ({data}) => {
             await this.start.execute('', data.token);
