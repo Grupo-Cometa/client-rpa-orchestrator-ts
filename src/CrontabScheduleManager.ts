@@ -1,14 +1,8 @@
 import * as fs from 'fs/promises';
 import { execSync } from 'child_process';
+import { Schedule } from './types';
 
-type Schedule = {
-  action: 'create' | 'delete',
-  cronExpression: string,
-  robotPublicId: string,
-  scheduleId: number
-}
-
-class CronScheduleManager {
+class CrontabScheduleManager {
   private username: string;
   private autoCommit: boolean;
 
@@ -81,4 +75,4 @@ class CronScheduleManager {
   }
 }
 
-export { CronScheduleManager }
+export { CrontabScheduleManager }

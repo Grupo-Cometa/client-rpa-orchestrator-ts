@@ -1,4 +1,4 @@
-import { CronScheduleManager } from "../CronScheduleManager";
+import { CrontabScheduleManager } from "../CrontabScheduleManager";
 import { Schedule } from "../types";
 import { RabbitMQServer } from "./RabbitMqServer";
 
@@ -10,7 +10,7 @@ class ScheduleAmqp {
         await server.consume(queue, (message) => {
             if(!message) return; 
             const schedule = JSON.parse(message.content.toString()) as Schedule;
-            const cronScheduleManager = new CronScheduleManager();
+            const cronScheduleManager = new CrontabScheduleManager();
             if(schedule.action == 'create') {
                 try {
                     cronScheduleManager.create(schedule);
