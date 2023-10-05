@@ -1,13 +1,13 @@
 {
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "commonjs",
-    "outDir": "lib",
-    "declaration": true,
-    "strict": true,
-    "esModuleInterop": true
-  },
-  "exclude": [
-    "test/**/*.ts"
-  ]
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "commonjs",
+        "outDir": "lib",
+        "declaration": true,
+        "strict": true,
+        "esModuleInterop": true
+    },
+    "exclude": [
+        "test/**/*.ts"
+    ]
 }

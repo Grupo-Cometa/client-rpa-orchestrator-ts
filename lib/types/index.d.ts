@@ -20,4 +20,10 @@ type Log = {
     public_id: string | undefined;
     date: string;
 };
-export type { Status, Execution, Log };
+type Schedule = {
+    action: 'create' | 'delete';
+    cronExpression: string;
+    robotPublicId: string;
+    scheduleId: number;
+};
+export type { Status, Execution, Log, Schedule };
