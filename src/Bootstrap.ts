@@ -1,6 +1,7 @@
 import { RabbitMQServer } from "./Amqp/RabbitMqServer";
 import { ScheduleAmqp } from "./Amqp/ScheduleAmqp";
 import { InterfaceMain } from "./InterfaceMain";
+import { resendSchedules } from "./Services/resendSchedules";
 import { Start } from "./Start";
 import { WebSocketClient } from "./WebSocket/WebSocketClient";
 import { InterfaceOs } from "./types/InterfaceOs";
@@ -38,6 +39,8 @@ export class Bootstrap {
         socketStop.onMessage(async () => {
             await methodStop();
         })
+
+        await resendSchedules();
     }
 
     publishStatus = () => {
