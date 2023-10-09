@@ -1,30 +1,34 @@
-import { CronToTaskSchedule, DuplicatedTaskException } from "cronjob-to-task-scheduler";
+import { CronToTaskSchedule } from "cronjob-to-task-scheduler";
+import { Schedule } from "./types";
 
 class WindowsScheduleManager {
 
-    constructor()
-    {
-
-    }
+    constructor(private schedule: Schedule){}
     
-    public create()
+    public create(): void
     {
-
+        const taskName = this.getScheduleName();
+        const taskCommand = this.getScheduleCommand();
+        CronToTaskSchedule.convert(taskName, this.schedule.cronExpression, taskCommand);
     }
 
-    public delete()
+    public delete(): void
     {
-
+        const taskName = this.getScheduleName();
+        CronToTaskSchedule.deleteTask(taskName);
     }
 
-    private getScheduleName()
+    private getScheduleName(): string
     {
-
+        return `Orquestrador\\${this.schedule.robotPublicId}.${this.schedule.scheduleId}`;
     }
 
-    private getScheduleCommand()
+    private getScheduleCommand(): {command: string, arguments: string}
     {
-
+        return {
+            command: `"${process.execPath}"`,
+            arguments: `"${process.cwd()}\\dist\\bootstrap\\start.js"` 
+        }
     }
 }
 
