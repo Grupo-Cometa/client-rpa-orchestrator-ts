@@ -12,35 +12,39 @@ class ScheduleAmqp {
         const server = new RabbitMQServer(process.env.AMQP_URL!);
 
         await server.consume(queue, (message) => {
-            if(!message) return; 
+            if (!message) return;
             const schedule = JSON.parse(message.content.toString()) as Schedule;
-            
-            if(schedule.action == 'create') {
+
+            if (schedule.action == 'create') {
                 try {
-                    if(platform() == 'linux') {
+                    if (platform() == 'linux') {
                         const cronScheduleManager = new CrontabScheduleManager();
                         cronScheduleManager.create(schedule);
                     }
 
-                    if(platform() == 'win32') {
+                    if (platform() == 'win32') {
                         const windowsScheduleManager = new WindowsScheduleManager(schedule);
                         windowsScheduleManager.create();
-                    } 
-                } catch(error: unknown) {
-                    if(error instanceof DuplicatedTaskException) return;
+                    }
+                } catch (error: unknown) {
+                    if (error instanceof DuplicatedTaskException) return;
                     this.publishDlq(schedule);
                 }
             }
-            
-            if(schedule.action == 'delete'){
-                if(platform() == 'linux') {
-                    const cronScheduleManager = new CrontabScheduleManager();
-                    cronScheduleManager.delete(schedule);
-                }
 
-                if(platform() == 'win32') {
-                    const windowsScheduleManager = new WindowsScheduleManager(schedule);
-                    windowsScheduleManager.delete();
+            if (schedule.action == 'delete') {
+                try {
+                    if (platform() == 'linux') {
+                        const cronScheduleManager = new CrontabScheduleManager();
+                        cronScheduleManager.delete(schedule);
+                    }
+
+                    if (platform() == 'win32') {
+                        const windowsScheduleManager = new WindowsScheduleManager(schedule);
+                        windowsScheduleManager.delete();
+                    }
+                } catch (error: unknown) {
+                    this.publishDlq(schedule);
                 }
             }
         })

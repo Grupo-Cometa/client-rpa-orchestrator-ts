@@ -1,19 +1,14 @@
-import * as fs from 'fs/promises';
+import { writeFile } from 'fs/promises';
 import { execSync } from 'child_process';
 import { Schedule } from './types';
 
 class CrontabScheduleManager {
-  private username: string;
-  private autoCommit: boolean;
 
-  constructor(username: string = 'root', autoCommit: boolean = true) {
-    this.username = username;
-    this.autoCommit = autoCommit;
-  }
+  constructor(private username: string = 'root', private autoCommit: boolean = true) { }
 
   private getCronsText(): string {
     try {
-      return execSync(`crontab -u ${this.username} -l`, {stdio: 'pipe'}).toString();
+      return execSync(`crontab -u ${this.username} -l`, { stdio: 'pipe' }).toString();
     } catch (error: unknown) {
       return '';
     }
@@ -26,9 +21,7 @@ class CrontabScheduleManager {
   }
 
   public async create(schedule: Schedule): Promise<void> {
-    if (this.existSchedule(schedule)) {
-      return;
-    }
+    if (this.existSchedule(schedule)) return;
 
     const text = this.getCronsText();
     const newTextCron = text + this.command(schedule);
@@ -39,29 +32,23 @@ class CrontabScheduleManager {
 
   private async write(text: string): Promise<void> {
     const baseTimezone = 'TZ=America/Cuiaba\n';
-    if(!text.includes(baseTimezone)) text = baseTimezone + text;
+    if (!text.includes(baseTimezone)) text = baseTimezone + text;
 
     const exists = /\n$/.test(text);
-    if (!exists) {
-      text += '\n';
-    }
 
-    await fs.writeFile('/var/www/crontab', text);
+    if (!exists) text += '\n';
 
-    try {
-      execSync(`crontab -u ${this.username} /var/www/crontab`).toString();
-    } catch (error: unknown) {
-      throw new Error('erro ao atualizar crontab');
-    }
+    await writeFile('/tmp/cron.txt', text);
+
+    execSync(`crontab -u ${this.username} /tmp/cron.txt`, { stdio: 'ignore' })
   }
 
   public commit(): void {
-    const stdout = execSync('service cron restart');
-    if (!stdout) throw new Error('erro ao reiniciar serviço cron')
+    execSync('service cron restart', { stdio: 'ignore' });
   }
 
   private command(schedule: Schedule): string {
-    return `${schedule.cronExpression} /usr/local/bin/node /var/www/dist/bootstrap/start.js ${schedule.scheduleId} >> /var/log/cron.log 2>&1 #id=${schedule.scheduleId} \n`;
+    return `${schedule.cronExpression}  /usr/local/bin/node /var/www/dist/bootstrap/start.js ${schedule.scheduleId} >> /var/log/cron.log 2>&1 #id=${schedule.scheduleId} \n`;
   }
 
   public async delete(schedule: Schedule): Promise<void> {
