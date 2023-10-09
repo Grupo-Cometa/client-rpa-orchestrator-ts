@@ -1,10 +1,5 @@
-type Schedule = {
-    action: 'create' | 'delete';
-    cronExpression: string;
-    robotPublicId: string;
-    scheduleId: number;
-};
-declare class CronScheduleManager {
+import { Schedule } from './types';
+declare class CrontabScheduleManager {
     private username;
     private autoCommit;
     constructor(username?: string, autoCommit?: boolean);
@@ -16,4 +11,4 @@ declare class CronScheduleManager {
     private command;
     delete(schedule: Schedule): Promise<void>;
 }
-export { CronScheduleManager };
+export { CrontabScheduleManager };
