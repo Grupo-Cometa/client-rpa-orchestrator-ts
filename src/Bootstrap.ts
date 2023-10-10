@@ -30,8 +30,6 @@ export class Bootstrap {
             )
         }, 3500)
 
-        await ScheduleAmqp.consume();
-
         socketStart.onMessage(async ({data}) => {
             await this.start.execute('', data.token);
         })
@@ -41,6 +39,7 @@ export class Bootstrap {
         })
 
         await resendSchedules();
+        await ScheduleAmqp.consume();
     }
 
     publishStatus = () => {
