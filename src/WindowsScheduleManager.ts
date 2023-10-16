@@ -23,7 +23,7 @@ class WindowsScheduleManager {
     private getScheduleCommand(): { command: string, arguments: string } {
         return {
             command: `"${process.execPath}"`,
-            arguments: `"${process.cwd()}\\dist\\bootstrap\\start.js" ${this.schedule.scheduleId}`
+            arguments: `"${__dirname}\\dist\\bootstrap\\start.js" ${this.schedule.scheduleId}`
         }
     }
 }
