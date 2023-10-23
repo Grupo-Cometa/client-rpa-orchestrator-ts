@@ -2,7 +2,6 @@ import { platform } from "os";
 import { ScheduleAmqp } from "./Amqp/ScheduleAmqp";
 import { CrontabScheduleManager } from "./CrontabScheduleManager";
 import { InterfaceMain } from "./InterfaceMain";
-import { resendSchedules } from "./Services/resendSchedules";
 import { Start } from "./Start";
 import { WebSocketClient } from "./WebSocket/WebSocketClient";
 import { InterfaceOs } from "./types/InterfaceOs";
@@ -50,7 +49,6 @@ export class Bootstrap {
             }
         })
 
-        await resendSchedules();
         await ScheduleAmqp.consume();
     }
 
