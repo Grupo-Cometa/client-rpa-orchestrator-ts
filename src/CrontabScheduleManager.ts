@@ -6,7 +6,7 @@ class CrontabScheduleManager {
 
   constructor(private username: string = 'root', private autoCommit: boolean = true) { }
 
-  private getCronsText(): string {
+  getCronsText(): string {
     try {
       return execSync(`crontab -u ${this.username} -l`, { stdio: 'pipe' }).toString();
     } catch (error: unknown) {
