@@ -20,10 +20,11 @@ class WindowsScheduleManager {
         return `Orquestrador\\${this.schedule.robotPublicId}.${this.schedule.scheduleId}`;
     }
 
-    private getScheduleCommand(): { command: string, arguments: string } {
+    private getScheduleCommand(): { command: string, arguments: string, workingDirectory: string } {
         return {
             command: `"${process.execPath}"`,
-            arguments: `"${process.cwd()}\\dist\\bootstrap\\start.js" ${this.schedule.scheduleId}`
+            arguments: `"${process.cwd()}\\dist\\bootstrap\\start.js" ${this.schedule.scheduleId}`,
+            workingDirectory: process.cwd()
         }
     }
 }

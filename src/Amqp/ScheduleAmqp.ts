@@ -11,6 +11,8 @@ class ScheduleAmqp {
     static async consume() {
         await resendSchedules();
         
+        await this.sleep(2500);
+
         const queue = `robot.schedules.${process.env.PUBLIC_ID}`;
         const server = new RabbitMQServer(process.env.AMQP_URL!);
 
@@ -51,6 +53,10 @@ class ScheduleAmqp {
                 }
             }
         })
+    }
+
+    private static sleep(ms: number): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     static async publishDlq(schedule: Schedule) {
