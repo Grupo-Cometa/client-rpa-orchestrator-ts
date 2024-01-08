@@ -6,7 +6,7 @@ async function resendSchedules()
         const robotId = await orquestrador.getRobotId(process.env.PUBLIC_ID!);
         await orquestrador.resendSchedules(robotId);
     } catch(error: unknown) {
-
+        console.log('error:resendSchedules',error)
     }
 }
 
