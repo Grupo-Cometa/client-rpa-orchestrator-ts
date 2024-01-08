@@ -1,7 +1,7 @@
-import { RabbitMQServer } from "./Amqp/RabbitMqServer";
+import { platform } from "os";
 import { ScheduleAmqp } from "./Amqp/ScheduleAmqp";
+import { CrontabScheduleManager } from "./CrontabScheduleManager";
 import { InterfaceMain } from "./InterfaceMain";
-import { resendSchedules } from "./Services/resendSchedules";
 import { Start } from "./Start";
 import { WebSocketClient } from "./WebSocket/WebSocketClient";
 import { InterfaceOs } from "./types/InterfaceOs";
@@ -20,6 +20,8 @@ export class Bootstrap {
         const socketStatus = new WebSocketClient(`status.${process.env.PUBLIC_ID}`);
         const socketStart = new WebSocketClient(`start.${process.env.PUBLIC_ID}`);
         const socketStop = new WebSocketClient(`stop.${process.env.PUBLIC_ID}`);
+        const socketEventEmitCrontab = new WebSocketClient(`event.emit:crontab.${process.env.PUBLIC_ID}`);
+        const socketCrontab = new WebSocketClient(`crontab.${process.env.PUBLIC_ID}`)
 
         const methodStatus = this.main.publishStatus ? this.main.publishStatus : this.publishStatus;
         const methodStop = this.main.stop ? this.main.stop : this.stop;
@@ -38,7 +40,15 @@ export class Bootstrap {
             await methodStop();
         })
 
-        await resendSchedules();
+        socketEventEmitCrontab.onMessage(() => {
+            if(platform() == 'linux') {
+                const crontabScheduleManager = new CrontabScheduleManager();
+                socketCrontab.sendMessage({
+                    crontab: crontabScheduleManager.getCronsText()
+                })
+            }
+        })
+
         await ScheduleAmqp.consume();
     }
 

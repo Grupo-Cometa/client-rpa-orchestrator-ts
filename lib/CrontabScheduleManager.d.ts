@@ -3,7 +3,7 @@ declare class CrontabScheduleManager {
     private username;
     private autoCommit;
     constructor(username?: string, autoCommit?: boolean);
-    private getCronsText;
+    getCronsText(): string;
     private existSchedule;
     create(schedule: Schedule): Promise<void>;
     private write;
