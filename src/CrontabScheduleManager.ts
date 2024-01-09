@@ -1,4 +1,4 @@
-import { writeFile } from 'fs/promises';
+import * as fs from 'fs'
 import { execSync } from 'child_process';
 import { Schedule } from './types';
 
@@ -38,7 +38,7 @@ class CrontabScheduleManager {
 
     if (!exists) text += '\n';
 
-    await writeFile('/tmp/cron.txt', text);
+    fs.writeFileSync('/tmp/cron.txt', text);
 
     execSync(`crontab -u ${this.username} /tmp/cron.txt`, { stdio: 'ignore' })
   }
