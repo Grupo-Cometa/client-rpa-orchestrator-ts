@@ -28,6 +28,9 @@ class CrontabScheduleManager {
 
     await this.write(newTextCron);
     if (this.autoCommit) this.commit();
+    if(!this.existSchedule(schedule)) {
+      throw new Error('erro ao gravar agendamento')
+    }
   }
 
   private async write(text: string): Promise<void> {
