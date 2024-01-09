@@ -10,13 +10,13 @@ class ScheduleAmqp {
 
     static async consume() {
         await resendSchedules();
-        
+
         await this.sleep(2500);
 
         const queue = `robot.schedules.${process.env.PUBLIC_ID}`;
         const server = new RabbitMQServer(process.env.AMQP_URL!);
 
-        await server.consume(queue, (message) => {
+        await server.consume(queue, async (message) => {
             if (!message) return;
             const schedule = JSON.parse(message.content.toString()) as Schedule;
 
@@ -24,7 +24,8 @@ class ScheduleAmqp {
                 try {
                     if (platform() == 'linux') {
                         const cronScheduleManager = new CrontabScheduleManager();
-                        cronScheduleManager.create(schedule);
+                        await cronScheduleManager.create(schedule);
+
                     }
 
                     if (platform() == 'win32') {
@@ -33,7 +34,7 @@ class ScheduleAmqp {
                     }
                 } catch (error: unknown) {
                     if (error instanceof DuplicatedTaskException) return;
-                    this.publishDlq(schedule);
+                    await this.publishDlq(schedule);
                 }
             }
 
@@ -41,7 +42,7 @@ class ScheduleAmqp {
                 try {
                     if (platform() == 'linux') {
                         const cronScheduleManager = new CrontabScheduleManager();
-                        cronScheduleManager.delete(schedule);
+                        await cronScheduleManager.delete(schedule);
                     }
 
                     if (platform() == 'win32') {
@@ -49,7 +50,7 @@ class ScheduleAmqp {
                         windowsScheduleManager.delete();
                     }
                 } catch (error: unknown) {
-                    this.publishDlq(schedule);
+                    await this.publishDlq(schedule);
                 }
             }
         })
