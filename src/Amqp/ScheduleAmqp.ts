@@ -4,11 +4,13 @@ import { WindowsScheduleManager } from "../WindowsScheduleManager";
 import { Schedule } from "../types";
 import { RabbitMQServer } from "./RabbitMqServer";
 import { platform } from "os";
-import { resendSchedules } from "../Services/resendSchedules";
+import resendSchedules from "../Services/resendSchedules";
+import { Log } from "../Log";
 
 class ScheduleAmqp {
 
     static async consume() {
+        await Log.write('info', `Consumer`, true)
         await resendSchedules();
 
         await this.sleep(2500);
@@ -16,10 +18,11 @@ class ScheduleAmqp {
         const queue = `robot.schedules.${process.env.PUBLIC_ID}`;
         const server = new RabbitMQServer(process.env.AMQP_URL!);
 
+        await Log.write('success', `start server.consumer`, true)
         await server.consume(queue, async (message) => {
             if (!message) return;
             const schedule = JSON.parse(message.content.toString()) as Schedule;
-
+            await Log.write('success', `schedule event: ${schedule.scheduleId}`, true)
             if (schedule.action == 'create') {
                 try {
                     if (platform() == 'linux') {
@@ -32,9 +35,11 @@ class ScheduleAmqp {
                         const windowsScheduleManager = new WindowsScheduleManager(schedule);
                         windowsScheduleManager.create();
                     }
-                } catch (error: unknown) {
+
+                    await this.publishScheduleSuccess(schedule);
+                } catch (error: any) {
                     if (error instanceof DuplicatedTaskException) return;
-                    await this.publishDlq(schedule);
+                    await Log.write('error', `Erro ao criar cron: ${error?.message}`)
                 }
             }
 
@@ -63,6 +68,11 @@ class ScheduleAmqp {
     static async publishDlq(schedule: Schedule) {
         const server = new RabbitMQServer(process.env.AMQP_URL!)
         await server.publish('robots.schedules-dlq', JSON.stringify(schedule))
+    }
+
+    static async publishScheduleSuccess(schedule: Schedule) {
+        const server = new RabbitMQServer(process.env.AMQP_URL!)
+        await server.publish('robots.schedules-success', JSON.stringify(schedule))
     }
 }
 

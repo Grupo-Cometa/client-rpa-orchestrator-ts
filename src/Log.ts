@@ -4,13 +4,15 @@ import { LogSocket } from './WebSocket/LogSocket';
 import { Log as LogType } from "./types";
 import moment from 'moment';
 import * as fs from 'fs'
+import { tmpdir } from "os"
+import path from 'path';
 
 export class Log {
     static async write(type: LogType["log_type"], message: string, writeFileLog = false) {
         try {
             printScreen[type](message)
 
-            if (writeFileLog) fs.appendFileSync('/var/log/orquestrado.log', `[${new Date}] ${message} [${type}]`)
+            await this.logFile(type, message, writeFileLog)
 
             if (process.env.DEBUG?.toLowerCase() == 'false') {
                 const log: LogType = {
@@ -26,6 +28,15 @@ export class Log {
         } catch (error) {
             printScreen[type](message)
         }
+    }
+
+    static async logFile(type: LogType["log_type"], message: string, writeFileLog = false) {
+        if (!writeFileLog) return;
+
+        const filename = path.join(tmpdir(), 'orquestrador/log.txt')
+        if (!fs.existsSync(filename)) fs.writeFileSync(filename, '')
+
+        fs.appendFileSync(filename, `[${new Date}] ${message} [${type}] \n`)
     }
 
 }
