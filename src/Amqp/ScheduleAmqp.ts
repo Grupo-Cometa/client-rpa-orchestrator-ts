@@ -4,14 +4,14 @@ import { WindowsScheduleManager } from "../WindowsScheduleManager";
 import { Schedule } from "../types";
 import { RabbitMQServer } from "./RabbitMqServer";
 import { platform } from "os";
-import resendSchedules from "../Services/resendSchedules";
+import * as service from "../Services/resendSchedules";
 import { Log } from "../Log";
 
 class ScheduleAmqp {
 
     static async consume() {
         await Log.write('info', `Consumer`, true)
-        await resendSchedules();
+        await service.resendSchedules();
 
         await this.sleep(2500);
 

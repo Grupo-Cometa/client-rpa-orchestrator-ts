@@ -1,9 +1,9 @@
 import { Log } from "../Log";
 import { orquestrador } from "../Http/Orquestrador";
 
-export default async () => {
+async function resendSchedules() {
     try {
-        await Log.write('info', `Excutando resendSchedule`, true)
+        await Log.write('info', `Excutando resend`, true)
         const robotId = await orquestrador.getRobotId(process.env.PUBLIC_ID!);
         await orquestrador.resendSchedules(robotId);
         await Log.write('success', `Agendamentos publicados`, true)
@@ -11,4 +11,6 @@ export default async () => {
         await Log.write('error', `Erro ao publicar os agendamento: ${error?.message}`, true)
     }
 }
+
+export { resendSchedules }
 

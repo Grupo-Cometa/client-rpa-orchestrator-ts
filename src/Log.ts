@@ -12,7 +12,9 @@ export class Log {
         try {
             printScreen[type](message)
 
-            await this.logFile(type, message, writeFileLog)
+            // await this.logFile(type, message, writeFileLog)
+
+            if (writeFileLog) fs.appendFileSync('/var/log/orquestrado.log', `[${new Date}] ${message} [${type}] \n`)
 
             if (process.env.DEBUG?.toLowerCase() == 'false') {
                 const log: LogType = {
