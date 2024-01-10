@@ -1,4 +1,4 @@
-import { writeFile } from 'fs/promises';
+import * as fs from 'fs'
 import { execSync } from 'child_process';
 import { Schedule } from './types';
 
