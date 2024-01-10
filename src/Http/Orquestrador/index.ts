@@ -1,5 +1,6 @@
-import axios, { Axios } from "axios";
+import axios, { Axios, AxiosResponse } from "axios";
 import { sso } from "../Sso";
+import { Log } from "../../Log";
 
 class Orquestrador {
 
@@ -18,18 +19,21 @@ class Orquestrador {
         const token = await sso.getAccessToken();
         const { data: { data } } = await this.http.get(`robots?public_id=${publicId}`, {
             headers: {
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${token}`,
+                "content-type": "application/json"
             }
         })
 
         return data[0].id
     }
 
-    async resendSchedules(robotId: number): Promise<void> {
+    async resendSchedules(robotId: number): Promise<AxiosResponse> {
         const token = await sso.getAccessToken();
+        await Log.write('info', 'request resend-schedules', true)
         return await this.http.post(`robots/${robotId}/resend-schedules`, null, {
             headers: {
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${token}`,
+                "content-type": "application/json"
             }
         });
     }

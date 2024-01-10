@@ -1,6 +1,7 @@
 import * as fs from 'fs'
 import { execSync } from 'child_process';
 import { Schedule } from './types';
+import { Log } from './Log';
 
 class CrontabScheduleManager {
 
@@ -21,6 +22,7 @@ class CrontabScheduleManager {
   }
 
   public async create(schedule: Schedule): Promise<void> {
+    await Log.write('info', 'execultando create', true)
     if (this.existSchedule(schedule)) return;
 
     const text = this.getCronsText();

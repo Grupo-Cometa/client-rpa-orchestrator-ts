@@ -1,2 +1,2 @@
-declare const _default: () => Promise<void>;
-export default _default;
+declare function resendSchedules(): Promise<void>;
+export { resendSchedules };
