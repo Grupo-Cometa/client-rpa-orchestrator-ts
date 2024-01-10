@@ -40,11 +40,11 @@ class ScheduleAmqp {
                         const windowsScheduleManager = new WindowsScheduleManager(schedule);
                         windowsScheduleManager.create();
                     }
-                    await Log.write('info', 'Linha 40 antes do publish');
+                    await Log.write('info', 'Linha 40 antes do publish', true);
                     await ScheduleSuccessAmqp.publish(schedule);
                 } catch (error: any) {
                     if (error instanceof DuplicatedTaskException) return;
-                    await Log.write('error', `Erro ao criar cron: ${error?.message}`)
+                    await Log.write('error', `Erro ao criar cron: ${error?.message}`, true)
                 }
             }
 
