@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import { execSync } from 'child_process';
 import { Schedule } from './types';
 import { Log } from './Log';
+import { ScheduleSuccessAmqp } from "./Amqp/ScheduleSuccessAmqp";
 
 class CrontabScheduleManager {
 
@@ -30,9 +31,12 @@ class CrontabScheduleManager {
 
     await this.write(newTextCron);
     if (this.autoCommit) this.commit();
+
     if (!this.existSchedule(schedule)) {
       throw new Error('erro ao gravar agendamento')
     }
+
+    // await ScheduleSuccessAmqp.publish(schedule);
   }
 
   private async write(text: string): Promise<void> {

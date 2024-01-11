@@ -32,7 +32,7 @@ export class Bootstrap {
             )
         }, 3500)
 
-        socketStart.onMessage(async ({data}) => {
+        socketStart.onMessage(async ({ data }) => {
             await this.start.execute('', data.token);
         })
 
@@ -41,15 +41,15 @@ export class Bootstrap {
         })
 
         socketEventEmitCrontab.onMessage(() => {
-            if(platform() == 'linux') {
+            if (platform() == 'linux') {
                 const crontabScheduleManager = new CrontabScheduleManager();
                 socketCrontab.sendMessage({
                     crontab: crontabScheduleManager.getCronsText()
                 })
             }
         })
-
-        await ScheduleAmqp.consume();
+        const scheduleAmqp = new ScheduleAmqp
+        await scheduleAmqp.consume();
     }
 
     publishStatus = () => {
@@ -82,7 +82,7 @@ export class Bootstrap {
             versionClient
         }
     }
-    
+
     stop = () => {
         const command = "taskkill /F /IM chrome.exe"
         exec(command);
