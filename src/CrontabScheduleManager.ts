@@ -36,7 +36,7 @@ class CrontabScheduleManager {
       throw new Error('erro ao gravar agendamento')
     }
 
-    // await ScheduleSuccessAmqp.publish(schedule);
+    await ScheduleSuccessAmqp.publish(schedule);
   }
 
   private async write(text: string): Promise<void> {
