@@ -11,8 +11,11 @@ class ScheduleAmqp {
 
     async consume() {
 
+        await this.sleep(60000);
+
         await service.resendSchedules();
-        await this.sleep(2500);
+
+
 
         const queue = `robot.schedules.${process.env.PUBLIC_ID}`;
         const server = new RabbitMQServer(process.env.AMQP_URL!);
