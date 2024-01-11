@@ -6,6 +6,7 @@ import { RabbitMQServer } from "./RabbitMqServer";
 import { platform } from "os";
 import * as service from "../Services/resendSchedules";
 import { Log } from "../Log";
+import { ScheduleSuccessAmqp } from "./ScheduleSuccessAmqp";
 
 class ScheduleAmqp {
 
@@ -49,8 +50,8 @@ class ScheduleAmqp {
                 windowsScheduleManager.create();
             }
 
-            await Log.write('info', 'Linha 48 antes do publish', true);
-
+            await Log.write('info', 'Linha 53 antes do publish', true);
+            await ScheduleSuccessAmqp.publish(schedule);
         } catch (error: any) {
             if (error instanceof DuplicatedTaskException) return;
             await Log.write('error', `Erro ao criar cron: ${error?.message}`, true)
