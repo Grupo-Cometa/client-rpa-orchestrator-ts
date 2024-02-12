@@ -16,8 +16,6 @@ class ScheduleAmqp {
 
         await service.resendSchedules();
 
-
-
         const queue = `robot.schedules.${process.env.PUBLIC_ID}`;
         const server = new RabbitMQServer(process.env.AMQP_URL!);
 

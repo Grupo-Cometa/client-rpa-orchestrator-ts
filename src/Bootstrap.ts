@@ -23,33 +23,44 @@ export class Bootstrap {
         const socketEventEmitCrontab = new WebSocketClient(`event.emit:crontab.${process.env.PUBLIC_ID}`);
         const socketCrontab = new WebSocketClient(`crontab.${process.env.PUBLIC_ID}`)
 
-        const methodStatus = this.main.publishStatus ? this.main.publishStatus : this.publishStatus;
-        const methodStop = this.main.stop ? this.main.stop : this.stop;
+        try {
 
-        setInterval(() => {
-            socketStatus.sendMessage(
-                methodStatus()
-            )
-        }, 3500)
 
-        socketStart.onMessage(async ({ data }) => {
-            await this.start.execute('', data.token);
-        })
+            const methodStatus = this.main.publishStatus ? this.main.publishStatus : this.publishStatus;
+            const methodStop = this.main.stop ? this.main.stop : this.stop;
 
-        socketStop.onMessage(async () => {
-            await methodStop();
-        })
+            setInterval(() => {
+                socketStatus.sendMessage(
+                    methodStatus()
+                )
+            }, 3500)
 
-        socketEventEmitCrontab.onMessage(() => {
-            if (platform() == 'linux') {
-                const crontabScheduleManager = new CrontabScheduleManager();
-                socketCrontab.sendMessage({
-                    crontab: crontabScheduleManager.getCronsText()
-                })
-            }
-        })
-        const scheduleAmqp = new ScheduleAmqp
-        await scheduleAmqp.consume();
+            socketStart.onMessage(async ({ data }) => {
+                await this.start.execute('', data.token);
+            })
+
+            socketStop.onMessage(async () => {
+                await methodStop();
+            })
+
+            socketEventEmitCrontab.onMessage(() => {
+                if (platform() == 'linux') {
+                    const crontabScheduleManager = new CrontabScheduleManager();
+                    socketCrontab.sendMessage({
+                        crontab: crontabScheduleManager.getCronsText()
+                    })
+                }
+            })
+            const scheduleAmqp = new ScheduleAmqp
+            await scheduleAmqp.consume();
+        } catch (error) {
+            socketStatus.close()
+            socketStart.close()
+            socketStop.close()
+            socketEventEmitCrontab.close()
+            socketCrontab.close()
+            this.run()
+        }
     }
 
     publishStatus = () => {

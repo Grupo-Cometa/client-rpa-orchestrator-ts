@@ -14,6 +14,10 @@ export class WebSocketClient {
         return socket
     }
 
+    public close(){
+        this.socketConnection.close() 
+    }
+
     private async sleep(milliseconds: number): Promise<void> {
         return new Promise((resolve) => {
             setTimeout(resolve, milliseconds);
