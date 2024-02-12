@@ -14,8 +14,8 @@ export class WebSocketClient {
         return socket
     }
 
-    public close(){
-        this.socketConnection.close() 
+    public close() {
+        this.socketConnection.close()
     }
 
     private async sleep(milliseconds: number): Promise<void> {
@@ -41,8 +41,8 @@ export class WebSocketClient {
                 const response = JSON.parse(message.data)
                 if (callback) callback(response)
                 socket.close();
-                await this.sleep(200);
-                this.socketConnection.close();
+                await this.sleep(300);
+                if (this.socketConnection.OPEN == 1) this.socketConnection.close();
             }
             socket.send(strBody)
         }
