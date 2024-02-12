@@ -16,6 +16,10 @@ export class Bootstrap {
         this.start = new Start(main);
     }
 
+    private async sleep(ms: number): Promise<void> {
+        return await new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     async run() {
         const socketStatus = new WebSocketClient(`status.${process.env.PUBLIC_ID}`);
         const socketStart = new WebSocketClient(`start.${process.env.PUBLIC_ID}`);
@@ -59,6 +63,7 @@ export class Bootstrap {
             socketStop.close()
             socketEventEmitCrontab.close()
             socketCrontab.close()
+            this.sleep(2500)
             this.run()
         }
     }

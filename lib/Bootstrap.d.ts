@@ -3,6 +3,7 @@ export declare class Bootstrap {
     private main;
     private start;
     constructor(main: InterfaceMain);
+    private sleep;
     run(): Promise<void>;
     publishStatus: () => {
         inExecution: boolean;
