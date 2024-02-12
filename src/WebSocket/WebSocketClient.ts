@@ -15,7 +15,7 @@ export class WebSocketClient {
     }
 
     public close() {
-        this.socketConnection.close()
+        if (this.socketConnection.readyState == WebSocket.OPEN) this.socketConnection.close()
     }
 
     private async sleep(milliseconds: number): Promise<void> {
@@ -42,7 +42,7 @@ export class WebSocketClient {
                 if (callback) callback(response)
                 socket.close();
                 await this.sleep(300);
-                if (this.socketConnection.OPEN == 1) this.socketConnection.close();
+                if (this.socketConnection.readyState == WebSocket.OPEN) this.socketConnection.close();
             }
             socket.send(strBody)
         }
