@@ -36,8 +36,8 @@ export class WebSocketClient {
         const strBody = JSON.stringify(body)
 
         socket.onopen = async () => {
-            await this.sleep(100);
-            if (this.socketConnection.readyState != WebSocket.OPEN) return;
+            await this.sleep(300);
+            if (socket.readyState != WebSocket.OPEN) return;
 
             socket.onmessage = async (message: MessageEvent) => {
                 //@ts-ignore
