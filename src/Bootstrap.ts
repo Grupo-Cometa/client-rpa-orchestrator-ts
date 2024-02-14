@@ -63,8 +63,8 @@ export class Bootstrap {
             socketStop.close()
             socketEventEmitCrontab.close()
             socketCrontab.close()
-            this.sleep(2500)
-            this.run()
+            await this.sleep(2500)
+            await this.run()
         }
     }
 
