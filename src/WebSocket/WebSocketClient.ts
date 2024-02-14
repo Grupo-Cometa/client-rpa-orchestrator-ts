@@ -60,31 +60,12 @@ export class WebSocketClient {
         }
     }
 
+
+
     onMessage(callback: (data: any) => void) {
         const body = {
             channel: this.channel,
             type: 'subscribe',
-        };
-
-        this.socketConnection.onopen = () => {
-            this.socketConnection.onmessage = (message: MessageEvent) => {
-                //@ts-ignore
-                const response = JSON.parse(message.data);
-                if (response?.statusCode === 101) {
-                    return true;
-                }
-
-                return callback(response);
-            };
-
-            if (this.socketConnection.readyState === WebSocket.CONNECTING) {
-                this.socketConnection.close();
-            }
-
-            this.socketConnection.send(JSON.stringify(body));
-            setInterval(() => {
-                this.socketConnection.send(JSON.stringify(body));
-            }, 30000)
         };
 
         this.socketConnection.onclose = (_) => {
@@ -100,5 +81,34 @@ export class WebSocketClient {
             this.socketConnection.close();
             console.log('tentando conectar onError')
         };
+
+        this.socketConnection.onmessage = (message: MessageEvent) => {
+            //@ts-ignore
+            const response = JSON.parse(message.data);
+            if (response?.statusCode === 101) {
+                return true;
+            }
+
+            return callback(response);
+        };
+
+        if (this.socketConnection.readyState === WebSocket.OPEN) {
+            this.socketConnection.send(JSON.stringify(body));
+
+            setInterval(() => {
+                this.socketConnection.send(JSON.stringify(body));
+            }, 30000)
+
+            return;
+        }
+
+        this.socketConnection.onopen = () => {
+
+            this.socketConnection.send(JSON.stringify(body));
+            setInterval(() => {
+                this.socketConnection.send(JSON.stringify(body));
+            }, 30000)
+        }
+
     }
 }
