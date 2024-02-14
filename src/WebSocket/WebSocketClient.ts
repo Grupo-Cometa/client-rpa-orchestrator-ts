@@ -35,22 +35,6 @@ export class WebSocketClient {
 
         const strBody = JSON.stringify(body)
 
-        socket.onopen = async () => {
-            await this.sleep(300);
-            if (socket.readyState != WebSocket.OPEN) return;
-
-            socket.onmessage = async (message: MessageEvent) => {
-                //@ts-ignore
-                const response = JSON.parse(message.data)
-                if (callback) callback(response)
-                socket.close();
-                await this.sleep(300);
-                if (this.socketConnection.readyState == WebSocket.OPEN) this.socketConnection.close();
-            }
-
-            socket.send(strBody)
-        }
-
         socket.onclose = (_) => {
             socket.close();
         }
@@ -58,6 +42,26 @@ export class WebSocketClient {
         socket.onerror = (_) => {
             socket.close();
         }
+
+        socket.onmessage = async (message: MessageEvent) => {
+            //@ts-ignore
+            const response = JSON.parse(message.data)
+            if (callback) callback(response)
+            socket.close();
+            await this.sleep(300);
+            if (this.socketConnection.readyState == WebSocket.OPEN) this.socketConnection.close();
+        }
+
+        if (socket.readyState === WebSocket.OPEN) {
+            return socket.send(strBody)
+        }
+
+
+        socket.onopen = async () => {
+            await this.sleep(300)
+            socket.send(strBody)
+        }
+
     }
 
 
@@ -102,8 +106,8 @@ export class WebSocketClient {
             return;
         }
 
-        this.socketConnection.onopen = () => {
-
+        this.socketConnection.onopen = async () => {
+            await this.sleep(300)
             this.socketConnection.send(JSON.stringify(body));
             setInterval(() => {
                 this.socketConnection.send(JSON.stringify(body));
