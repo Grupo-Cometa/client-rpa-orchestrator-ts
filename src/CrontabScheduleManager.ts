@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import { execSync } from 'child_process';
 import { Schedule } from './types';
 import { Log } from './Log';
+import * as path from "path"
 
 class CrontabScheduleManager {
 
@@ -54,7 +55,12 @@ class CrontabScheduleManager {
   }
 
   private command(schedule: Schedule): string {
-    return `${schedule.cronExpression}  /usr/local/bin/node /var/www/dist/bootstrap/start.js ${schedule.scheduleId} >> /var/log/cron.log 2>&1 #id=${schedule.scheduleId} \n`;
+    return `${schedule.cronExpression}  /usr/local/bin/node ${path.join(this.getPathProject(),'/dist/bootstrap/start.js')} ${schedule.scheduleId} >> /var/log/cron.log 2>&1 #id=${schedule.scheduleId} \n`;
+  }
+
+  private getPathProject() {
+    if (process.env.PATH_PROJECT) return process.env.PATH_PROJECT
+    return '/var/www'
   }
 
   public async delete(schedule: Schedule): Promise<void> {
