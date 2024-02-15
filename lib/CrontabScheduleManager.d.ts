@@ -9,6 +9,7 @@ declare class CrontabScheduleManager {
     private write;
     commit(): void;
     private command;
+    private getPathProject;
     delete(schedule: Schedule): Promise<void>;
 }
 export { CrontabScheduleManager };
