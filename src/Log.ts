@@ -28,19 +28,8 @@ export class Log {
                 log["content"] = await this.contentToBase64(content)
             }
 
-            if (writeFileLog) fs.appendFileSync('/var/log/orquestrado.log', `[${new Date}] ${message} [${type}] \n`)
-
-            if (process.env.DEBUG?.toLowerCase() == 'false') {
-                const log: LogType = {
-                    log_type: type,
-                    message,
-                    public_id: process.env.PUBLIC_ID,
-                    type: 'log',
-                    date: moment().format('YYYY-MM-DD HH:mm:ss')
-                }
-                LogSocket.send(log)
-                await LogAmqp.publish(log)
-            }
+            LogSocket.send(log)
+            await LogAmqp.publish(log)
         } catch (error) {
             printScreen.error(`erro ao enviar a menssagem via socket:[${message}]`)
             printScreen[typeLog](message)
@@ -62,8 +51,7 @@ export class Log {
     }
 
     static async contentToBase64(content?: Content) {
-        if(!content) return null;
-        
+        if(!content) return null
         if (content instanceof Buffer) {
             return content.toString('base64')
         }
