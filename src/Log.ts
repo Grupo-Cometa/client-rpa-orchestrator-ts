@@ -50,8 +50,8 @@ export class Log {
         return await this.write("warning", message, content)
     }
 
-    static async contentToBase64(content?: Content) {
-        if(!content) return null
+    private static async contentToBase64(content?: Content) {
+        if (!content) return null
         if (content instanceof Buffer) {
             return content.toString('base64')
         }
