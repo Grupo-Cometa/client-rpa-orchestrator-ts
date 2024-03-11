@@ -8,6 +8,7 @@
         "esModuleInterop": true
     },
     "exclude": [
-        "test/**/*.ts"
+        "test/**/*.ts",
+        "storage/**/*.*"
     ]
 }
