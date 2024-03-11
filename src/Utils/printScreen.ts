@@ -8,10 +8,10 @@ export const printScreen = {
     },
 
     error: (data: any) => {
-        console.error('\x1b[31m%s\x1b[0m', data)
+        console.log('\x1b[31m%s\x1b[0m', data)
     },
 
     warning: (data: any) => {
-        console.warn('\x1b[33m%s\x1b[0m', data)
+        console.log('\x1b[33m%s\x1b[0m', data)
     }
 }

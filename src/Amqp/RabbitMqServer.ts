@@ -1,4 +1,4 @@
-import { Channel, connect, Connection, ConsumeMessage } from "amqplib";
+import { connect, ConsumeMessage } from "amqplib";
 
 export class RabbitMQServer {
 
@@ -20,7 +20,7 @@ export class RabbitMQServer {
 
   }
 
-  public async consume(queue: string, callback: (message: ConsumeMessage | null ) => void): Promise<void> {
+  public async consume(queue: string, callback: (message: ConsumeMessage | null) => Promise<void>): Promise<void> {
     const conn = await connect(this.uri);
     const channel = await conn.createChannel();
 
@@ -28,7 +28,7 @@ export class RabbitMQServer {
       durable: true
     });
 
-    channel.consume(queue, callback, {
+    await channel.consume(queue, callback, {
       noAck: true
     });
   }
