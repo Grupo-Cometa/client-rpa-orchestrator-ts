@@ -19,15 +19,15 @@ class ScheduleAmqp {
         const queue = `robot.schedules.${process.env.PUBLIC_ID}`;
         const server = new RabbitMQServer(process.env.AMQP_URL!);
 
-        await Log.write('success', `start server.consumer`, true)
+        await Log.write('success', `start server.consumer`)
         await server.consume(queue, async (message) => {
             if (!message) {
-                await Log.write('info', `Message: ${JSON.stringify(message || {})}`, true)
+                await Log.write('info', `Message: ${JSON.stringify(message || {})}`)
                 return;
             }
 
             const schedule = JSON.parse(message.content.toString()) as Schedule;
-            await Log.write('success', `schedule event: ${schedule.scheduleId}`, true)
+            await Log.write('success', `schedule event: ${schedule.scheduleId}`)
 
             if (schedule.action == 'create') return await this.create(schedule)
             if (schedule.action == 'delete') return await this.delete(schedule)
@@ -48,11 +48,11 @@ class ScheduleAmqp {
                 windowsScheduleManager.create();
             }
 
-            await Log.write('info', 'Linha 53 antes do publish', true);
+            await Log.write('info', 'Linha 53 antes do publish');
             await ScheduleSuccessAmqp.publish(schedule);
         } catch (error: any) {
             if (error instanceof DuplicatedTaskException) return;
-            await Log.write('error', `Erro ao criar cron: ${error?.message}`, true)
+            await Log.write('error', `Erro ao criar cron: ${error?.message}`)
         }
     }
 

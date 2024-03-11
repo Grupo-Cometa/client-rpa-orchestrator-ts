@@ -23,7 +23,7 @@ class CrontabScheduleManager {
   }
 
   public async create(schedule: Schedule): Promise<void> {
-    await Log.write('info', 'execultando create', true)
+    await Log.write('info', 'execultando create')
     if (this.existSchedule(schedule)) return;
 
     const text = this.getCronsText();

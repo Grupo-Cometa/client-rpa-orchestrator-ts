@@ -6,7 +6,7 @@ import moment from 'moment';
 import { readFileSync, existsSync } from "fs";
 
 
-type Content = Buffer | string | object
+type Content = Buffer | string | object 
 
 export class Log {
 
@@ -52,6 +52,7 @@ export class Log {
 
     private static async contentToBase64(content?: Content) {
         if (!content) return null
+
         if (content instanceof Buffer) {
             return content.toString('base64')
         }

@@ -29,7 +29,7 @@ class Orquestrador {
 
     async resendSchedules(robotId: number): Promise<AxiosResponse> {
         const token = await sso.getAccessToken();
-        await Log.write('info', 'request resend-schedules', true)
+        await Log.write('info', 'request resend-schedules')
         return await this.http.post(`robots/${robotId}/resend-schedules`, null, {
             headers: {
                 Authorization: `Bearer ${token}`,
