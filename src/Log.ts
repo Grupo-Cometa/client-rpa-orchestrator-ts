@@ -23,13 +23,17 @@ export class Log {
         });
         return formatoDataHora.format(dataAtual);
     }
+
     private static printScreen(typeLog: LogType["log_type"], message: string, content?: Content) {
+
         if (content) {
-            return printScreen[typeLog](`[${this.currentDateStr()}] ${message}`, content, '\n')
+            return printScreen[typeLog](`[${this.currentDateStr()}] ${message}`, typeof content, '\n')
         }
 
         return printScreen[typeLog](`[${this.currentDateStr()}] ${message}`, '\n')
     }
+
+
     static async write(typeLog: LogType["log_type"], message: string, content?: Content) {
         try {
 
