@@ -1,17 +1,17 @@
 export const printScreen = {
-    info: (data: any) => {
-        console.log('\x1b[34m%s\x1b[0m', data)
+    info: (...args: any[]) => {
+        console.log('\x1b[34m%s\x1b[0m', ...args)
     },
 
-    success: (data: any) => {
-        console.log('\x1b[32m%s\x1b[0m', data)
+    success: (...args: any[]) => {
+        console.log('\x1b[32m%s\x1b[0m', ...args)
     },
 
-    error: (data: any) => {
-        console.log('\x1b[31m%s\x1b[0m', data)
+    error: (...args: any[]) => {
+        console.log('\x1b[31m%s\x1b[0m', ...args)
     },
 
-    warning: (data: any) => {
-        console.log('\x1b[33m%s\x1b[0m', data)
+    warning: (...args: any[]) => {
+        console.log('\x1b[33m%s\x1b[0m', ...args)
     }
 }
