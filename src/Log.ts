@@ -81,7 +81,8 @@ export class Log {
         }
 
         if (typeof content == "object") {
-            return btoa(JSON.stringify(content))
+            const jsonStr = JSON.stringify(content)
+            return this.strToBase64(jsonStr);
         }
 
         const isFile = existsSync(content)
@@ -90,6 +91,11 @@ export class Log {
             return file.toString('base64')
         }
 
-        return btoa(content)
+        return this.strToBase64(content);
+    }
+
+    private static strToBase64(str: string) {
+        const utf8Str = Buffer.from(str, 'utf-8')
+        return utf8Str.toString('base64')
     }
 }
