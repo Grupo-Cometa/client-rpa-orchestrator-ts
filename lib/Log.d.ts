@@ -10,5 +10,6 @@ export declare class Log {
     static success(message: string, content?: Content): Promise<void>;
     static waring(message: string, content?: Content): Promise<void>;
     private static contentToBase64;
+    private static strToBase64;
 }
 export {};
