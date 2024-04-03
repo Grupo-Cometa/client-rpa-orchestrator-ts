@@ -3,6 +3,5 @@ declare class ScheduleAmqp {
     private create;
     private delete;
     private sleep;
-    private publishDlq;
 }
 export { ScheduleAmqp };
