@@ -24,8 +24,8 @@ class ScheduleAmqp {
 
             const schedule = JSON.parse(message.content.toString()) as Schedule;
 
-            if (schedule.action == 'create') return await this.create(schedule);
-            if (schedule.action == 'delete') return await this.delete(schedule);
+            if (schedule.action == 'create') await this.create(schedule);
+            if (schedule.action == 'delete') await this.delete(schedule);
 
             await ScheduleSuccessAmqp.publish(schedule);
         })
