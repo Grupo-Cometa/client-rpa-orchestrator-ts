@@ -1,7 +1,12 @@
-declare class RabbitMqpService {
-    static createInstace(queue: string): Promise<{
-        conn: import("amqplib").Connection;
-        channel: import("amqplib").Channel;
-    }>;
+import { ConsumeMessage, Options } from "amqplib";
+declare class RabbitMqServerV2 {
+    private url;
+    private connection;
+    private channel;
+    constructor(url: string);
+    private connect;
+    private disconnect;
+    publish(queue: string, message: string, options?: Options.AssertQueue): Promise<void>;
+    consume(queue: string, callback: (message: ConsumeMessage | null) => Promise<void>, options?: Options.AssertQueue): Promise<void>;
 }
-export { RabbitMqpService };
+export { RabbitMqServerV2 };

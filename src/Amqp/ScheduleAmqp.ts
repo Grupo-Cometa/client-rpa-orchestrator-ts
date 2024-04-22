@@ -2,11 +2,11 @@ import { DuplicatedTaskException } from "cronjob-to-task-scheduler";
 import { CrontabScheduleManager } from "../CrontabScheduleManager";
 import { WindowsScheduleManager } from "../WindowsScheduleManager";
 import { Schedule } from "../types";
-import { RabbitMQServer } from "./RabbitMqServer";
 import { platform } from "os";
 import * as service from "../Services/resendSchedules";
 import { Log } from "../Log";
 import { ScheduleSuccessAmqp } from "./ScheduleSuccessAmqp";
+import { RabbitMqServerV2 } from "./RabbitMqServerV2";
 
 class ScheduleAmqp {
 
@@ -17,7 +17,7 @@ class ScheduleAmqp {
         await service.resendSchedules();
 
         const queue = `robot.schedules.${process.env.PUBLIC_ID}`;
-        const server = new RabbitMQServer(process.env.AMQP_URL!);
+        const server = new RabbitMqServerV2(process.env.AMQP_URL!);
 
         await server.consume(queue, async (message) => {
             if (!message) return;
@@ -28,8 +28,10 @@ class ScheduleAmqp {
             if (schedule.action == 'delete') await this.delete(schedule);
 
             await ScheduleSuccessAmqp.publish(schedule);
+        }, {
+            durable: true,
+            autoDelete: false,
         })
-
     }
 
     private async create(schedule: Schedule) {

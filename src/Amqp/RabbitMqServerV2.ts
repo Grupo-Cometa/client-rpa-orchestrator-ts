@@ -1,48 +1,74 @@
-import { connect } from "amqplib";
+import { Channel, Connection, ConsumeMessage, Options, connect } from "amqplib";
 
+class RabbitMqServerV2 {
+    
+    private connection: Connection | null = null;
+    private channel: Channel | null = null;
+    
+    constructor(private url: string) {}
 
-class RabbitMqpService {
+    private async connect()
+    {
+        await this.disconnect();
+        this.connection = await connect(this.url);
+        this.channel = await this.connection.createChannel();
+        return;
+    }
 
-    public static async createInstace(queue: string) {
-        const uri = `amqp://${process.env.AMQP_USER}:${process.env.AMQP_PASSWORD}@${process.env.AMQP_HOST}:${process.env.AMQP_PORT}`
+    private async disconnect()
+    {
+        try {
+            await this.connection?.close();
+        } catch(error) {
 
-        const conn = await connect(uri);
-        const channel = await conn.createChannel();
+        }
+    }
 
-        await channel.assertQueue(queue, {
-            durable: true
-        });
+    public async publish(queue: string, message: string, options?: Options.AssertQueue)
+    {
+        try {
+            await this.connect();
+            await this.channel?.assertQueue(queue, options);
+            this.channel?.sendToQueue(queue, Buffer.from(message));
+            setTimeout(() => {
+                this.disconnect();
+            }, 500);
+        } catch (error: unknown) {
 
-        return { conn, channel };
+        }
+    }
+
+    public async consume(queue: string, callback: (message: ConsumeMessage| null) => Promise<void>, options?: Options.AssertQueue)
+    {
+        const startConsuming = async () => {
+            try {
+                await this.connect();
+                this.connection?.on('close', () => {
+                    return reconnect();
+                })
+        
+                this.connection?.on('error', () => {
+                    return reconnect();
+                })
+        
+                this.connection?.on('blocked', () => {
+                    return reconnect();
+                })
+                await this.channel?.assertQueue(queue, options);
+                await this.channel?.consume(queue, callback, { noAck: true })
+            } catch(error: unknown) {
+                reconnect();
+            }
+        }
+
+        const reconnect = () => {
+            setTimeout(() => {
+                startConsuming();
+            }, 10000);
+          };
+
+        await startConsuming();
     }
 }
 
-export { RabbitMqpService }
-
-// import "../helpers/env"
-// import { RabbitMqpService } from "../Services/Amqp/RabbitMqpService";
-// import { ConsumeMessage } from "amqplib";
-
-// (async () => {
-
-//     const {conn, channel} = await RabbitMqpService.createInstace("robot.schedules.teste1")
-
-//     await channel.consume("robot.schedules.teste1", (msg: ConsumeMessage | null) => {
-//         if (!msg) return;
-
-//         try {
-//             console.log(msg)
-
-//             // channel.ack(msg)
-//         } catch (error) {
-//             // channel.reject(msg, false);
-//             console.log('error', msg)
-//         }
-//     }, {
-//         noAck: false
-//     })
-    
-// })()
-
-
-
+export { RabbitMqServerV2 }
