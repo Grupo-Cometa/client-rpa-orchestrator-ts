@@ -5,11 +5,11 @@ export declare class Bootstrap {
     constructor(main: InterfaceMain);
     private sleep;
     run(): Promise<void>;
-    publishStatus: () => {
+    protected publishStatus: () => {
         inExecution: boolean;
         cpu: string;
         ram: string;
         versionClient: string;
     };
-    stop: () => void;
+    protected stop: () => void;
 }
