@@ -1,31 +1,28 @@
 import { Channel, Connection, ConsumeMessage, Options, connect } from "amqplib";
 
 class RabbitMqServerV2 {
-    
+
     private connection: Connection | null = null;
     private channel: Channel | null = null;
-    
-    constructor(private url: string) {}
 
-    private async connect()
-    {
+    constructor(private url: string) { }
+
+    private async connect() {
         await this.disconnect();
         this.connection = await connect(this.url);
         this.channel = await this.connection.createChannel();
         return;
     }
 
-    private async disconnect()
-    {
+    private async disconnect() {
         try {
             await this.connection?.close();
-        } catch(error) {
+        } catch (error) {
 
         }
     }
 
-    public async publish(queue: string, message: string, options?: Options.AssertQueue)
-    {
+    public async publish(queue: string, message: string, options?: Options.AssertQueue) {
         try {
             await this.connect();
             await this.channel?.assertQueue(queue, options);
@@ -38,25 +35,24 @@ class RabbitMqServerV2 {
         }
     }
 
-    public async consume(queue: string, callback: (message: ConsumeMessage| null) => Promise<void>, options?: Options.AssertQueue)
-    {
+    public async consume(queue: string, callback: (message: ConsumeMessage | null) => Promise<void>, options?: Options.AssertQueue) {
         const startConsuming = async () => {
             try {
                 await this.connect();
                 this.connection?.on('close', () => {
                     return reconnect();
                 })
-        
+
                 this.connection?.on('error', () => {
                     return reconnect();
                 })
-        
+
                 this.connection?.on('blocked', () => {
                     return reconnect();
                 })
                 await this.channel?.assertQueue(queue, options);
                 await this.channel?.consume(queue, callback, { noAck: true })
-            } catch(error: unknown) {
+            } catch (error: unknown) {
                 reconnect();
             }
         }
@@ -65,7 +61,7 @@ class RabbitMqServerV2 {
             setTimeout(() => {
                 startConsuming();
             }, 10000);
-          };
+        };
 
         await startConsuming();
     }

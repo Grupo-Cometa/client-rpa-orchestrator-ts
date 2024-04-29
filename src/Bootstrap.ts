@@ -68,7 +68,7 @@ export class Bootstrap {
         }
     }
 
-    publishStatus = () => {
+    protected publishStatus = () => {
         const os: InterfaceOs = {
             'linux': {
                 command: 'ps aux',
@@ -99,7 +99,7 @@ export class Bootstrap {
         }
     }
 
-    stop = () => {
+    protected stop = () => {
         const command = "taskkill /F /IM chrome.exe"
         exec(command);
     }
