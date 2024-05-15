@@ -5,16 +5,16 @@ import { Execution } from "./types";
 
 class Start {
 
-    constructor(private main: InterfaceMain) {}
+    constructor(private main: InterfaceMain) { }
 
     async execute(sheduleId?: string, token?: string) {
         await this.sleep(1000);
         await ExecutionAmqp.publish(this.getExecution("START", sheduleId, token))
-        
+
         try {
             await this.main.start()
-        } catch(error: unknown) {
-            console.error(error);
+        } catch (error: unknown) {
+            console.log(error);
         } finally {
             await ExecutionAmqp.publish(this.getExecution("STOP", sheduleId, token));
         }
@@ -23,8 +23,8 @@ class Start {
     private async sleep(milliseconds: number): Promise<void> {
         return new Promise((resolve) => {
             setTimeout(resolve, milliseconds);
-          });
-    } 
+        });
+    }
 
     private getExecution(status: Execution["status"], schedule_id?: string, token?: string): Execution {
         return {
