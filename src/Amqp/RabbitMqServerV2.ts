@@ -11,7 +11,6 @@ class RabbitMqServerV2 {
         await this.disconnect();
         this.connection = await connect(this.url);
         this.channel = await this.connection.createChannel();
-        return;
     }
 
     private async disconnect() {
@@ -40,15 +39,15 @@ class RabbitMqServerV2 {
             try {
                 await this.connect();
                 this.connection?.on('close', () => {
-                    return reconnect();
+                    reconnect();
                 })
 
                 this.connection?.on('error', () => {
-                    return reconnect();
+                    reconnect();
                 })
 
                 this.connection?.on('blocked', () => {
-                    return reconnect();
+                    reconnect();
                 })
                 await this.channel?.assertQueue(queue, options);
                 await this.channel?.consume(queue, callback, { noAck: true })
@@ -60,7 +59,7 @@ class RabbitMqServerV2 {
         const reconnect = () => {
             setTimeout(() => {
                 startConsuming();
-            }, 10000);
+            }, 30000);
         };
 
         await startConsuming();
