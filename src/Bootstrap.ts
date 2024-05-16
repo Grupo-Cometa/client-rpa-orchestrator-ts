@@ -7,6 +7,7 @@ import { WebSocketClient } from "./WebSocket/WebSocketClient";
 import { InterfaceOs } from "./types/InterfaceOs";
 var execSync = require("child_process").execSync;
 import { exec } from "child_process";
+import * as packageJson from '../package.json';
 
 export class Bootstrap {
 
@@ -87,18 +88,19 @@ export class Bootstrap {
         var processes = execSync(command).toString();
         inExecution = processes.includes(processBot);
 
+
         let cpu = ''
         let ram = ''
-        let versionClient = ''
-
+   
+        
         return {
             inExecution,
             cpu,
             ram,
-            versionClient
+            versionClient: packageJson.version
         }
     }
-
+    
     protected stop = () => {
         const command = "taskkill /F /IM chrome.exe"
         exec(command);
