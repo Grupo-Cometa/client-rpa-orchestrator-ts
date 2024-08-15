@@ -12,13 +12,13 @@ class ScheduleAmqp {
 
     async consume() {
 
+        await Log.info('Aguardando 1 minutos para consumir agendamentos')
         await this.sleep(60000);
-
         await service.resendSchedules();
 
         const queue = `robot.schedules.${process.env.PUBLIC_ID}`;
         const server = new RabbitMqServerV2(process.env.AMQP_URL!);
-
+        await Log.success(`start consumer amqp: ${queue}`)
         await server.consume(queue, async (message) => {
             if (!message) return;
 

@@ -10,7 +10,7 @@ export class WebSocketClient {
     }
 
     private connection(): WebSocket {
-        const socket = new WebSocket(process.env.WS_URL!, { handshakeTimeout: 60000, sessionTimeout: -1 })
+        const socket = new WebSocket(process.env.WS_URL!, { handshakeTimeout: 60000, sessionTimeout: 120000 })
         return socket
     }
 

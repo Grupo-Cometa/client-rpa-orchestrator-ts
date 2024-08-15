@@ -3,6 +3,7 @@
         "target": "ES2022",
         "module": "commonjs",
         "outDir": "lib",
+        "rootDir": "src",
         "declaration": true,
         "strict": true,
         "esModuleInterop": true,
@@ -10,6 +11,7 @@
     },
     "exclude": [
         "test/**/*.ts",
-        "storage/**/*.*"
+        "storage/**/*.*",
+        ".env"
     ]
 }
