@@ -9,11 +9,9 @@ import { ScheduleSuccessAmqp } from "./ScheduleSuccessAmqp";
 import { RabbitMqServerV2 } from "./RabbitMqServerV2";
 
 class ScheduleAmqp {
-
     async consume() {
-
         await Log.info('Aguardando 1 minutos para consumir agendamentos')
-        // await this.sleep(60000);
+        await this.sleep(60000);
         await service.resendSchedules();
 
         const queue = `robot.schedules.${process.env.PUBLIC_ID}`;
