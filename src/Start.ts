@@ -8,10 +8,9 @@ class Start {
     constructor(private main: InterfaceMain) { }
 
     async execute(sheduleId?: string, token?: string) {
-        await this.sleep(1000);
-        await ExecutionAmqp.publish(this.getExecution("START", sheduleId, token))
-
         try {
+            await this.sleep(1000);
+            await ExecutionAmqp.publish(this.getExecution("START", sheduleId, token));
             await this.main.start()
         } catch (error: unknown) {
             console.log(error);

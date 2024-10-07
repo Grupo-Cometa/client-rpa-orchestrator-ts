@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { Log as LogType } from "./types";
 type Content = Buffer | string | object;
 export declare class Log {

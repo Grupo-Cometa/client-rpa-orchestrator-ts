@@ -1,7 +1,8 @@
-import axios, { Axios } from "axios";
+import axios, { AxiosInstance } from "axios";
+import axiosRetry from "axios-retry";
 
 class Sso {
-  private http: Axios
+  private http: AxiosInstance
 
   constructor() {
     this.http = axios.create({
@@ -9,7 +10,22 @@ class Sso {
       headers: {
         "content-type": "application/x-www-form-urlencoded"
       },
+      timeout: 10000
     });
+
+    axiosRetry(this.http, {
+      retries: 3,
+      retryDelay: (retryCount) => {
+        return retryCount * 1000
+      },
+      retryCondition: (error) => {
+        return (
+          axiosRetry.isNetworkError(error) ||
+          axiosRetry.isRetryableError(error) ||
+          error.code === "ECONNRESET"
+        );
+      },
+    })
   }
 
   async getAccessToken(): Promise<string>

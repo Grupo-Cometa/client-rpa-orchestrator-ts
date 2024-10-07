@@ -9,7 +9,6 @@ export declare class Bootstrap {
         inExecution: boolean;
         cpu: string;
         ram: string;
-        versionClient: string;
     };
     protected stop: () => void;
 }

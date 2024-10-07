@@ -7,7 +7,6 @@ import { WebSocketClient } from "./WebSocket/WebSocketClient";
 import { InterfaceOs } from "./types/InterfaceOs";
 var execSync = require("child_process").execSync;
 import { exec } from "child_process";
-import * as packageJson from '../package.json';
 
 export class Bootstrap {
 
@@ -96,8 +95,7 @@ export class Bootstrap {
         return {
             inExecution,
             cpu,
-            ram,
-            versionClient: packageJson.version
+            ram
         }
     }
     
