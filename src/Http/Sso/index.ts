@@ -9,8 +9,7 @@ class Sso {
       baseURL: "https://sso.viacometa.com.br/",
       headers: {
         "content-type": "application/x-www-form-urlencoded"
-      },
-      timeout: 10000
+      }
     });
 
     axiosRetry(this.http, {
