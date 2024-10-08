@@ -3,7 +3,7 @@ import { Channel, Connection, ConsumeMessage, Options, connect } from "amqplib";
 class RabbitMqServerV2 {
     private connection: Connection | null = null;
     private channel: Channel | null = null;
-    private reconnectInterval: number = 30000; // 30 seconds
+    private reconnectInterval: number = 30000;
 
     constructor(private url: string) { }
 
@@ -63,6 +63,7 @@ class RabbitMqServerV2 {
         } catch (error) {
             console.log('Failed to consume messages:', error);
             this.reconnect();
+            setTimeout(() => this.consume(queue, callback, options), this.reconnectInterval);
         }
     }
 }
