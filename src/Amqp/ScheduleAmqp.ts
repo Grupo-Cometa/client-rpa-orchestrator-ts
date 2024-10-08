@@ -6,7 +6,7 @@ import { platform } from "os";
 import * as service from "../Services/resendSchedules";
 import { Log } from "../Log";
 import { ScheduleSuccessAmqp } from "./ScheduleSuccessAmqp";
-import { RabbitMqServerV2 } from "./RabbitMqServerV2";
+import { RabbitMQServer } from "./RabbitMqServer";
 
 class ScheduleAmqp {
     async consume() {
@@ -15,7 +15,7 @@ class ScheduleAmqp {
         await service.resendSchedules();
 
         const queue = `robot.schedules.${process.env.PUBLIC_ID}`;
-        const server = new RabbitMqServerV2(process.env.AMQP_URL!);
+        const server = new RabbitMQServer(process.env.AMQP_URL!);
         await Log.success(`start consumer amqp: ${queue}`)
         await server.consume(queue, async (message) => {
             if (!message) return;
@@ -26,9 +26,6 @@ class ScheduleAmqp {
             if (schedule.action == 'delete') await this.delete(schedule);
 
             await ScheduleSuccessAmqp.publish(schedule);
-        }, {
-            durable: true,
-            autoDelete: false
         })
     }
 

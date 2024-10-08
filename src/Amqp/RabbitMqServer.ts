@@ -1,35 +1,96 @@
-import { connect, ConsumeMessage } from "amqplib";
+import { Channel, connect, Connection, ConsumeMessage } from "amqplib";
 
 export class RabbitMQServer {
 
+  private conn!: Connection;
+  private channel!: Channel;
+
   constructor(private uri: string) { }
 
-  public async publish(queue: string, message: string): Promise<void> {
-    const conn = await connect(this.uri);
-    const channel = await conn.createChannel();
+  private async connect(): Promise<void> {
+    try {
+      await this.disconnect();
+      this.conn = await connect(this.uri);
+      this.channel = await this.conn.createChannel();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
 
-    await channel.assertQueue(queue, {
-      durable: true
-    });
-
-    channel.sendToQueue(queue, Buffer.from(message));
-
-    setTimeout(function () {
-      conn.close();
-    }, 500);
-
+      }
+    }
   }
 
-  public async consume(queue: string, callback: (message: ConsumeMessage | null) => Promise<void>): Promise<void> {
-    const conn = await connect(this.uri);
-    const channel = await conn.createChannel();
+  public async disconnect(): Promise<void> {
+    try {
+      await this.channel?.close();
+      await this.conn?.close();
+    } catch (err) {
 
-    await channel.assertQueue(queue, {
-      durable: true
-    });
+    }
+  }
 
-    await channel.consume(queue, callback, {
-      noAck: true
-    });
+  public async publish(queue: string, message: string): Promise<void> {
+    try {
+      await this.connect();
+
+      await this.channel?.assertQueue(queue, {
+        durable: true,
+        autoDelete: false
+      });
+
+      await new Promise<void>((resolve) => {
+        this.channel?.sendToQueue(queue, Buffer.from(message));
+        setTimeout(() => {
+          resolve();
+          this.disconnect();
+        }, 500);
+      });
+    } catch (err) {
+    }
+  }
+
+  public async consume(queue: string, callback: (message: ConsumeMessage | null) => Promise<void>) {
+    try {
+
+      const processMessage = (message: ConsumeMessage | null) => {
+        if (message) {
+          callback(message);
+        }
+      };
+
+      const startConsuming = async () => {
+        try {
+          await this.connect();
+          this.conn?.on('error', () => {
+            reconnect();
+          });
+
+          this.conn?.on('close', () => {
+            reconnect();
+          });
+
+          this.conn?.on('blocked', () => {
+            reconnect();
+          });
+          await this.channel?.assertQueue(queue, {
+            durable: true,
+            autoDelete: false,
+          });
+          await this.channel?.consume(queue, processMessage, {
+            noAck: true,
+          });
+        } catch (error) {
+          reconnect();
+        }
+      };
+
+      const reconnect = () => {
+        setTimeout(() => {
+          startConsuming();
+        }, 30000);
+      };
+
+      await startConsuming();
+    } catch (error) {
+    }
   }
 }
