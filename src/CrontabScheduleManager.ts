@@ -37,16 +37,15 @@ class CrontabScheduleManager {
 
   private async write(text: string): Promise<void> {
     const envVariables = Object.keys(process.env)
+      .filter((key) => key[0] === key[0].toUpperCase())
       .map((key) => `${key}=${process.env[key]}`)
       .join('\n');
     
-    const base = `${envVariables}TZ=America/Cuiaba\n`;
+    const base = `${envVariables}\nTZ=America/Cuiaba\n`;
     
     if (!text.includes(base)) text = base + text;
 
-    const exists = /\n$/.test(text);
-
-    if (!exists) text += '\n';
+    text.endsWith('\n') ? text : text += '\n';
 
     fs.writeFileSync('/tmp/cron.txt', text);
 
