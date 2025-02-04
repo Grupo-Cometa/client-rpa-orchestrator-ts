@@ -36,17 +36,16 @@ class CrontabScheduleManager {
   }
 
   private async write(text: string): Promise<void> {
-    const baseTimezone = 'TZ=America/Cuiaba\n';
-
     const envVariables = Object.keys(process.env)
       .map((key) => `${key}=${process.env[key]}`)
       .join('\n');
-
-    const cronEnvVariables = `${baseTimezone}\n${envVariables}\n`;
-
-    if (!text.includes(cronEnvVariables)) text = cronEnvVariables + text;
+    
+    const base = `${envVariables}TZ=America/Cuiaba\n`;
+    
+    if (!text.includes(base)) text = base + text;
 
     const exists = /\n$/.test(text);
+
     if (!exists) text += '\n';
 
     fs.writeFileSync('/tmp/cron.txt', text);
