@@ -7,7 +7,7 @@ class Orquestrador {
 
     constructor() {
         this.http = axios.create({
-            baseURL: "https://apps.viacometa.com.br/api/orchestrator/",
+            baseURL: "https://orquestrador.viacometa.com.br/api",
             headers: {
                 "content-type": "application/json"
             },
