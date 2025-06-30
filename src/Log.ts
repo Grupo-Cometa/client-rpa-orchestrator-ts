@@ -69,8 +69,11 @@ export class Log {
     static async success(message: string, content?: Content) {
         return await this.write("success", message, content)
     }
-    static async waring(message: string, content?: Content) {
+    static async warning(message: string, content?: Content) {
         return await this.write("warning", message, content)
+    }
+    static async critical(message: string, content?: Content) {
+        return await this.write("critical", message, content)
     }
 
     private static async contentToBase64(content?: Content) {

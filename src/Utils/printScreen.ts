@@ -13,5 +13,9 @@ export const printScreen = {
 
     warning: (...args: any[]) => {
         console.log('\x1b[33m%s\x1b[0m', ...args)
-    }
+    },
+
+    critical: (...args: any[]) => {
+        console.log('\x1b[35m%s\x1b[0m', ...args)
+    },
 }

@@ -8,7 +8,8 @@ export declare class Log {
     static info(message: string, content?: Content): Promise<void>;
     static error(message: string, content?: Content): Promise<void>;
     static success(message: string, content?: Content): Promise<void>;
-    static waring(message: string, content?: Content): Promise<void>;
+    static warning(message: string, content?: Content): Promise<void>;
+    static critical(message: string, content?: Content): Promise<void>;
     private static contentToBase64;
     private static strToBase64;
 }

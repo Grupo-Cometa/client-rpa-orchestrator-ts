@@ -3,4 +3,5 @@ export declare const printScreen: {
     success: (...args: any[]) => void;
     error: (...args: any[]) => void;
     warning: (...args: any[]) => void;
+    critical: (...args: any[]) => void;
 };

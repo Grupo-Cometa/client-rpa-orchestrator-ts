@@ -16,7 +16,7 @@ type Execution = {
 type Log = {
     type: 'log';
     message: string;
-    log_type: 'info' | 'warning' | 'error' | 'success';
+    log_type: 'info' | 'warning' | 'error' | 'success' | 'critical';
     public_id: string | undefined;
     date: string;
     content?: string | null;
